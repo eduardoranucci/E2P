@@ -1,50 +1,38 @@
 import openpyxl as xl
+import os
 
-planilha = xl.load_workbook(r'base.xlsx')
-df = planilha.active
+if os.path.exists(r'.\base.txt'):
+    os.remove(r'.\base.txt')
 
-debito, credito, valor, hist, data = [], [], [], [], []
+excel = xl.load_workbook(r'base.xlsx')
+df = excel.active
+espacos = ' ' * 100
 
-for column in df['A:E']:
+for cell in df['A:A']:
+
+    linha = cell.row
+    if cell.row == 1:
+        continue
+    try:
+        data = cell.value.strftime('%d%m%Y')
+    except AttributeError:
+        continue
+        
+    debito = (str(df[f'B{linha}'].value).replace('None', '') + espacos)[:10]
+    credito = (str(df[f'C{linha}'].value).replace('None', '')  + espacos)[:10]
+    valor = (str(df[f'D{linha}'].value).replace('None', '')  + espacos)[:8]
+    historico = (str(df[f'E{linha}'].value).replace('None', '')  + espacos)[:40]
+    item_debito = (str(df[f'F{linha}'].value).replace('None', '')  + espacos)[:11]
+    item_credito = (str(df[f'G{linha}'].value).replace('None', '')  + espacos)[:11]
+    classe_debito = (str(df[f'H{linha}'].value).replace('None', '')  + espacos)[:10]
+    classe_credito = (str(df[f'I{linha}'].value).replace('None', '')  + espacos)[:10]
+    entidade_05_debito = (str(df[f'J{linha}'].value).replace('None', '')  + espacos)[:12]
+    entidate_06_credito = (str(df[f'K{linha}'].value).replace('None', '')  + espacos)[:12]
+
+    informacoes_pt1 = f"004|{debito}|{credito}|{valor}|{historico}|{data}|{item_debito}|{item_credito}|"
+    informacoes_pt2 = f"{classe_debito}|{classe_credito}|{entidade_05_debito}|{entidate_06_credito}\n"
+    linha_txt = informacoes_pt1 + informacoes_pt2
     
-    for cell in column:
-
-        match cell.column:
-
-            case 1:
-                debito.append(cell.value)
-
-            case 2:
-                credito.append(cell.value)
-
-            case 3:
-                valor.append(cell.value)
-
-            case 4:
-                hist.append(cell.value)
-
-            case 5:
-                data.append(cell.value)
-
-espaco = " " * 9
-linha = []
-
-i = 0
-while i < len(debito): 
-
-    deb = f'{debito[i]}{" " * 40}'
-    cred = f'{credito[i]}{" " * 40}'
-    val = f'{valor[i]}{" " * 40}'
-    ht = f'{hist[i]}{" " * 40}'
-    dt = f'{data[i]}{" " * 40}'
-
-    linha.append(f'001{" " * 6}{deb[:11]}{espaco}{cred[:11]}{espaco}{val[:8]}   {espaco}{ht[:40]}{dt[:8]}\n')
-    i = i + 1
-
-
-with open('base.txt', mode='w+') as txt:
-
-    for i in linha:
-        txt.write(i)
-
-exit()
+    with open('base.txt', mode='a', encoding='utf-8') as txt:
+        txt.write(linha_txt)
+        
