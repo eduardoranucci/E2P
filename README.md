@@ -1,4 +1,4 @@
-# gerador-txt
+# E2P
 
 Este repositório contém uma aplicação desenvolvida em Python para ler uma planilha em formato Excel (.xlsx) e gerar um arquivo de texto (.txt) com as informações coletadas. O objetivo é permitir que os usuários possam importar o arquivo TXT gerado pela aplicação no sistema ERP Protheus usando a rotina de contabilização TXT.
 
